@@ -13,43 +13,51 @@ type ListNode struct {
 	Next *ListNode
 }
 
+type LinkedList struct {
+	Head *ListNode
+	Tail *ListNode
+}
+
 func reverseKGroup(head *ListNode, k int) *ListNode {
 	if k == 1 {
 		return head
 	}
 
 	dummyHead := &ListNode{0, head}
-	var lastTail, kHead *ListNode
+	var lastTail *ListNode
+	var kList *LinkedList
+
 	lastTail = dummyHead
+
 	for index, node := 0, dummyHead; node != nil; index, node = index+1, node.Next {
 		if index%k == 1 {
-			kHead = &ListNode{node.Val, nil}
+			knode := &ListNode{node.Val, nil}
+			kList = newLinkedList(knode)
 			lastTail.Next = node
 		} else {
-			kHead = &ListNode{node.Val, kHead}
+			kList = kList.Prepend(node.Val)
 		}
 
 		if index > 0 && index%k == 0 {
-			lastTail.Next = kHead
-			lastTail = tail(kHead)
+			lastTail.Next = kList.Head
+			lastTail = kList.Tail
 		}
 	}
 
 	return dummyHead.Next
 }
 
-func tail(head *ListNode) *ListNode {
-	if head == nil {
-		return nil
+func (l *LinkedList) Prepend(val int) *LinkedList {
+	if l == nil {
+		node := &ListNode{val, nil}
+		return newLinkedList(node)
 	}
+	l.Head = &ListNode{val, l.Head}
+	return l
+}
 
-	var tail *ListNode
-
-	for node := head; node != nil; node = node.Next {
-		tail = node
-	}
-
-	return tail
+func newLinkedList(node *ListNode) *LinkedList {
+	return &LinkedList{node, node}
 }
 
 // ----- assist funcs -----
