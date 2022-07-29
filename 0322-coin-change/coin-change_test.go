@@ -16,6 +16,7 @@ func Test_coinChange(t *testing.T) {
 		{"-1", args{[]int{2}, 3}, -1},
 		{"0", args{[]int{1}, 0}, 0},
 		{"1", args{[]int{1}, 1}, 1},
+		{"3", args{[]int{2,5}, 10}, 2},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
