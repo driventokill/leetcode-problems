@@ -23,11 +23,12 @@ func canPartitionKSubsets(nums []int, k int) bool {
 
 func byBucket(nums []int, k, target int) bool {
 	used := make([]bool, len(nums))
-	return backtrackByBucket(k, 0, nums, 0, used, target)
+	memo := make(map[uint16]bool)
+	return backtrackByBucket(k, 0, nums, 0, used, target, memo)
 }
 
 // k: current bucket to be filled
-func backtrackByBucket(k, bucket int, nums []int, start int, used []bool, target int) bool {
+func backtrackByBucket(k, bucket int, nums []int, start int, used []bool, target int, memo map[uint16]bool) bool {
 	if k == 0 {
 		// every bucket is fullfilled
 		return true
@@ -36,7 +37,15 @@ func backtrackByBucket(k, bucket int, nums []int, start int, used []bool, target
 	if bucket == target {
 		// current bucket is full
 		// select nums for the next bucket
-		return backtrackByBucket(k-1, 0, nums, 0, used, target)
+		res := backtrackByBucket(k-1, 0, nums, 0, used, target, memo)
+		// remember current state
+		memo[tobits(used)] = res
+		return res
+	}
+
+	// use former result if exists
+	if res, exists := memo[tobits(used)]; exists {
+		return res
 	}
 
 	// find usable num from start
@@ -53,7 +62,7 @@ func backtrackByBucket(k, bucket int, nums []int, start int, used []bool, target
 		used[i] = true
 		bucket += nums[i]
 		// decide if the next number should be filled
-		if backtrackByBucket(k, bucket, nums, i+1, used, target) {
+		if backtrackByBucket(k, bucket, nums, i+1, used, target, memo) {
 			return true
 		}
 
@@ -63,6 +72,16 @@ func backtrackByBucket(k, bucket int, nums []int, start int, used []bool, target
 	}
 
 	return false
+}
+
+func tobits(used []bool) uint16 {
+	var a uint16
+	for i, v := range used {
+		if v {
+			a += 1 << i
+		}
+	}
+	return a
 }
 
 // ----------- traverse by num --------------------------------------
