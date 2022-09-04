@@ -2,7 +2,6 @@ package permutations
 
 import (
 	"reflect"
-	"sort"
 	"testing"
 
 	"github.com/driventokill/leetcode-problems/util"
@@ -21,8 +20,8 @@ func Test_permute(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := permute(tt.nums)
-			sort.Sort(util.IntSlices(tt.want))
-			sort.Sort(util.IntSlices(got))
+			util.SortSlices(tt.want)
+			util.SortSlices(got)
 
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("permute() = %v, want %v", got, tt.want)

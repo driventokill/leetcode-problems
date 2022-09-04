@@ -1,24 +1,22 @@
 package util
 
-type IntSlices [][]int
+import (
+	"sort"
 
-func (slices IntSlices) Len() int {
-	return len(slices)
-}
+	"golang.org/x/exp/constraints"
+)
 
-func (slices IntSlices) Swap(i, j int) {
-	slices[i], slices[j] = slices[j], slices[i]
-}
-
-func (slices IntSlices) Less(i, j int) bool {
-	if len(slices[i]) != len(slices[j]) {
-		panic("slice lens not equal.")
-	}
-
-	for idx := range slices[i] {
-		if slices[i][idx] < slices[j][idx] {
-			return true
+func SortSlices[T constraints.Ordered](s [][]T) {
+	sort.Slice(s, func(i, j int) bool {
+		if len(s[i]) != len(s[j]) {
+			panic("length of slice not euqal.")
 		}
-	}
-	return false
+		for idx := range s[i] {
+			if s[i][idx] < s[j][idx] {
+				return true
+			}
+		}
+
+		return false
+	})
 }
